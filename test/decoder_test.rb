@@ -1,49 +1,34 @@
-require_relative 'test_handler'
+require 'minitest/autorun'
+require 'minitest/pride'
+require '../lib/paramorse'
 
 class DecoderTest < MiniTest::Test
-
-  def test_it_takes_and_returns_strings
-    decoder = ParaMorse::Decoder.new
-    sequence_to_decode = "1010101000100010111010100010111010100011101110111"
-
-    assert decoder.decode(sequence_to_decode).is_a?(String)
+  def setup
+    @d = ParaMorse::Decoder.new
   end
 
-  def test_it_divides_into_letters
-    decoder = ParaMorse::Decoder.new
+  def test_it_takes_and_returns_strings
     sequence_to_decode = "1010101000100010111010100010111010100011101110111"
 
-    num_of_letters = decoder.split(sequence_to_decode).count
+    assert @d.decode(sequence_to_decode).is_a?(String)
+  end
 
-    assert_equal 5, num_of_letters
+  def test_decoder_decodes_one_letter
+    assert_equal 'e', @d.decode('1')
+  end
+
+  def test_decoder_decodes_two_letters
+    assert_equal 'be', @d.decode('1110101010001')
   end
 
   def test_it_decodes_all_letters
-    decoder = ParaMorse::Decoder.new
     sequence_to_decode = "1010101000100010111010100010111010100011101110111"
-
-    decoder.decode(sequence_to_decode)
-    decoded = decoder.decode_letters
-
-    assert_equal ['h', 'e', 'l', 'l', 'o'], decoded
-  end
-
-  def test_it_decodes_a_word
-    decoder = ParaMorse::Decoder.new
-    sequence_to_decode = "1010101000100010111010100010111010100011101110111"
-
-    word = decoder.decode(sequence_to_decode)
-
-    assert_equal 'hello', word
+    assert_equal 'hello', @d.decode(sequence_to_decode)
   end
 
   def test_it_decodes_multiple_words
-    decoder = ParaMorse::Decoder.new
-    sequence_to_decode = "1010101000100010111010100010111010100011101110111000001011101110001110111011100010111010001011101010001110101"
-
-    phrase = decoder_decode(sequence_to_decode)
-
-    assert_equal "hello world", phrase
+    sequence_to_decode = "101010100010001011101010001011101010001110111011100000001011101110001110111011100010111010001011101010001110101"
+    assert_equal "hello world", @d.decode(sequence_to_decode)
   end
 
 end

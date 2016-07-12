@@ -1,3 +1,5 @@
+require 'pry'
+
 module ParaMorse
 
   LETTERS_TO_MORSE = {
@@ -27,7 +29,7 @@ module ParaMorse
     "x" => "11101010111",
     "y" => "1110101110111",
     "z" => "11101110101",
-    " " => "000000",
+    " " => "0000000",
     "1" => "10111011101110111",
     "2" => "101011101110111",
     "3" => "1010101110111",
@@ -47,23 +49,25 @@ module ParaMorse
     end
 
     def push(data_to_insert)
-      @queue_frame.unshift(data_to_insert.to_s)
+      @queue_frame << data_to_insert
     end
 
-    def pop(number_to_pop = 1)
-      @queue_frame.pop(number_to_pop).reverse
+    def pop
+      @queue_frame.shift
     end
 
     def count
       @queue_frame.count
     end
 
-    def tail(number_to_see = 1)
-      @queue_frame[0 .. (number_to_see - 1)]
+    def tail(number_to_see = -1)
+      number_to_see -= (number_to_see * 2) unless number_to_see == -1
+      @queue_frame[number_to_see..-1]
     end
 
     def peek(number_to_see = 1)
-      @queue_frame[(0 - number_to_see) .. -1].reverse
+      number_to_see -= 1
+      @queue_frame[0..number_to_see]
     end
 
     def clear
@@ -73,109 +77,57 @@ module ParaMorse
 
   end
 
-  class LetterEncoder
-
-    def encode(letter_to_encode)
-      LETTERS_TO_MORSE[letter_to_encode]
-    end
-
-  end
-
-  class LetterDecoder
-
-    def decode(sequence_to_decode)
-      LETTERS_TO_MORSE.key(sequence_to_decode)
-    end
-
-  end
-
   class Encoder
-
-    def initialize
-      @letter_encoder = ParaMorse::LetterEncoder.new
-      @morse_sequence = []
-      @encoded_words = []
+    def encode(input)
+      @input = input
+      return LETTERS_TO_MORSE[@input] if @input.length == 1
+      letters_to_encode
     end
 
-    def encode(phrase_to_encode)
-      words_to_encode = phrase_to_encode.split
-
-      words_to_encode.each do |word|
-        encode_word(word)
-      end
-
-      @encoded_words.join("00000")
+    def letters_to_encode
+      letters_to_morse = @input.split(//).map {|char| encode_chars(char)}
+      letters_to_morse.join.chomp('000')
     end
 
-    def encode_word(word)
-      word.each_char do |letter|
-        @morse_sequence << @letter_encoder.encode(letter)
-      end
-      dump_word_into_list
+    def encode_chars(char)
+      return encode(char).chomp('000') if char == " "
+      encode(char) + '000'
     end
-
-    def dump_word_into_list
-      @encoded_words << @morse_sequence.join("000")
-      @morse_sequence = []
-    end
-
   end
 
   class Decoder
-
-    def initialize
-      @letter_queue = ParaMorse::Queue.new
-      @letter_decoder = ParaMorse::LetterDecoder.new
-      @letters_to_decode = []
-      @letter_over = false
+    def decode(input)
+      @input = input
+      return decode_words if input =~ /0000000/
+      return LETTERS_TO_MORSE.key(input) unless input =~ /000/
+      input.split('000').map {|letter| decode(letter)}.join
     end
 
-    def decode(sequence_to_decode)
-      split(sequence_to_decode)
-      decode_letters.join
-    end
-
-    def split(sequence_to_decode)
-
-      sequence_to_decode.each_char do |binary_digit|
-        @letter_queue.push(binary_digit)
-        determine_end_of_letter
-
-        if @letter_over && @letter_queue.peek == ['0', '0', '0', '0', '0']
-          consolidate_into_letter
-        elsif @letter_over
-          @letter_queue.clear
-          @letter_over = false
-        end
-
+    def decode_words
+      decoded_words = @input.split('0000000').map do |word|
+        "#{decode(word)} "
       end
-      @letters_to_decode << consolidate_into_letter
-
-    end
-
-    def determine_end_of_letter
-      if @letter_queue.tail(3) == ['0', '0', '0']
-        @letters_to_decode << consolidate_into_letter(3)
-        @letter_over = true
-        # @letter_queue.clear
-      end
-    end
-
-    def consolidate_into_letter(number_of_dividing_zeros = 0)
-      number_to_pop = @letter_queue.count - number_of_dividing_zeros
-      @letter_queue.pop(number_to_pop).join
-    end
-
-    def decode_letters
-
-      decoded_letters = @letters_to_decode.map do |binary_letter|
-        @letter_decoder.decode(binary_letter)
-      end
-
+      return decoded_words.join.chop
     end
   end
 
+  class StreamDecoder
+    attr_reader :current_queue
 
+    def initialize
+      @current_queue = Queue.new
+    end
 
+    def receive(input)
+      @current_queue.push(input)
+    end
 
+    def decode
+      letter_to_be_decoded = String.new
+      until @current_queue.count == 0
+        letter_to_be_decoded += @current_queue.pop
+      end
+      Decoder.new.decode(letter_to_be_decoded)
+    end
+  end
 end

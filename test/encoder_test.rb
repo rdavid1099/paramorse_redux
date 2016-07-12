@@ -1,4 +1,6 @@
-require_relative 'test_handler'
+require 'Minitest/autorun'
+require 'Minitest/pride'
+require '../lib/paramorse'
 
 class EncoderTest < MiniTest::Test
 
@@ -17,9 +19,25 @@ class EncoderTest < MiniTest::Test
 
   def test_it_encodes_multiple_words_in_morse
     encoder = ParaMorse::Encoder.new
-    expected = "1010101000100010111010100010111010100011101110111000001011101110001110111011100010111010001011101010001110101"
+    expected = "101010100010000000111010101"
+    assert_equal expected, encoder.encode('he b')
+  end
 
+  def test_it_encodes_multiple_words_in_morse
+    encoder = ParaMorse::Encoder.new
+    expected = "101010100010001011101010001011101010001110111011100000001011101110001110111011100010111010001011101010001110101"
     assert_equal expected, encoder.encode("hello world")
   end
 
+  def test_it_encodes_more_words
+    encoder = ParaMorse::Encoder.new
+    expected = "101010100010001011101010001011101010001110111011100000001011101110001110111011100010111010001011101010001110101"
+    assert_equal expected, encoder.encode("hello world")
+  end
+
+  def test_it_encodes_other_words_in_morse
+    encoder = ParaMorse::Encoder.new
+    expected = "101010100010001011101010001011101010001110111011100000001011101110001110111011100010111010001011101010001110101"
+    assert_equal expected, encoder.encode("hello world")
+  end
 end
