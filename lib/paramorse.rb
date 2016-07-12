@@ -56,13 +56,17 @@ module ParaMorse
       @queue_frame.shift
     end
 
+    def pop_multiple(number_to_pop)
+      @queue_frame.shift(number_to_pop).reverse.join
+    end
+
     def count
       @queue_frame.count
     end
 
     def tail(number_to_see = -1)
       number_to_see -= (number_to_see * 2) unless number_to_see == -1
-      @queue_frame[number_to_see..-1]
+      @queue_frame[number_to_see..-1].reverse
     end
 
     def peek(number_to_see = 1)
@@ -90,6 +94,7 @@ module ParaMorse
     end
 
     def encode_chars(char)
+      return char + '000' if LETTERS_TO_MORSE.include?(char) == false
       return encode(char).chomp('000') if char == " "
       encode(char) + '000'
     end
@@ -129,5 +134,47 @@ module ParaMorse
       end
       Decoder.new.decode(letter_to_be_decoded)
     end
+  end
+
+  class FileEncoder
+    attr_reader :plain_filename,
+                :encode_filename
+
+    def initialize
+      @encoder = Encoder.new
+    end
+
+    def encode(plain, encode)
+      @plain_filename = check_for_txt(plain)
+      @encode_filename = check_for_txt(encode)
+      file_validated ? write_file : "File does not exist"
+    end
+
+    def file_validated
+      File.exist?(@plain_filename)
+    end
+
+    def check_for_txt(filename)
+      filename = "#{filename}.txt" unless filename =~ /.txt/
+      filename
+    end
+
+    def file_to_encode_contents
+      File.read(@plain_filename).downcase.chomp
+    end
+
+    def encoded_text
+      @encoder.encode(file_to_encode_contents)
+    end
+
+    def write_file
+      file = File.new(@encode_filename, 'w')
+      file.write(encoded_text)
+      file.close
+    end
+  end
+
+  class FileDecoder
+    
   end
 end

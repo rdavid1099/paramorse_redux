@@ -1,6 +1,6 @@
 require 'Minitest/autorun'
 require 'Minitest/pride'
-require '../lib/paramorse'
+require './lib/paramorse'
 
 class TestStreamDecoder < MiniTest::Test
   def setup

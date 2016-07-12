@@ -1,0 +1,2 @@
+Now, this is a real world scenario.  Not only do I have grammar, I also have double spaces after words and special character... like # and @ and $$.
+Does a new line break it?  It shouldn't, as long as it is tested well.

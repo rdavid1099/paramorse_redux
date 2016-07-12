@@ -1,4 +1,6 @@
-require_relative 'test_handler'
+require 'Minitest/autorun'
+require 'Minitest/pride'
+require './lib/paramorse'
 
 class QueueTest < MiniTest::Test
 
@@ -7,7 +9,7 @@ class QueueTest < MiniTest::Test
 
     some_queue.push('0')
 
-    assert_equal ['0'], some_queue.pop
+    assert_equal '0', some_queue.pop
   end
 
 
@@ -18,9 +20,9 @@ class QueueTest < MiniTest::Test
     some_queue.push('1')
     some_queue.push('1')
 
-    assert_equal ['0'], some_queue.pop
-    assert_equal ['1'], some_queue.pop
-    assert_equal ['1'], some_queue.pop
+    assert_equal '0', some_queue.pop
+    assert_equal '1', some_queue.pop
+    assert_equal '1', some_queue.pop
   end
 
   def test_it_pops_multiple_characters
@@ -30,7 +32,7 @@ class QueueTest < MiniTest::Test
     some_queue.push('1')
     some_queue.push('1')
 
-    assert_equal ['0', '1'], some_queue.pop(2)
+    assert_equal '10', some_queue.pop_multiple(2)
   end
 
   def test_it_accepts_integers_as_input
@@ -38,7 +40,7 @@ class QueueTest < MiniTest::Test
 
     some_queue.push(0)
 
-    assert_equal ['0'], some_queue.pop
+    assert_equal 0, some_queue.pop
   end
 
   def test_it_counts_its_elements
