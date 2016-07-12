@@ -37,4 +37,7 @@ class TestFileDecoder < Minitest::Test
   def test_file_decoder_decodes_special_characters
     @f.decode('spec_chars_encoded', 'spec_chars_decode')
   end
+  def test_file_decoder_decodes_news_article
+    @f.decode('real_world_news_encode', 'real_world_news_decoded')
+  end
 end

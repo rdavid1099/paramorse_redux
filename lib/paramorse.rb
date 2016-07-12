@@ -89,30 +89,46 @@ module ParaMorse
     end
 
     def letters_to_encode
-      letters_to_morse = @input.split(//).map {|char| encode_chars(char)}
-      letters_to_morse.join.chomp('000')
+      letters_to_morse = @input.split(//).map.with_index do |char, i|
+        unless i == 0
+          encode_chars(char)
+        else
+          encode(char)
+        end
+      end
+      letters_to_morse.join
     end
 
     def encode_chars(char)
-      return char + '000' if LETTERS_TO_MORSE.include?(char) == false
+      return char if LETTERS_TO_MORSE.include?(char) == false
       return encode(char).chomp('000') if char == " "
-      encode(char) + '000'
+      '000' + encode(char)
     end
   end
 
   class Decoder
     def decode(input)
       @input = input
-      return decode_words if input =~ /0000000/
-      return LETTERS_TO_MORSE.key(input) unless input =~ /000/
-      input.split('000').map {|letter| decode(letter)}.join
+      return decode_words if @input =~ /0000000*/
+      return LETTERS_TO_MORSE.key(@input) unless @input =~ /000/
+      return decode_letters
     end
 
     def decode_words
-      decoded_words = @input.split('0000000').map do |word|
-        "#{decode(word)} "
-      end
+      decoded_words = @input.split(/0000000*/).map {|word| "#{decode(word)} "}
       return decoded_words.join.chop
+    end
+
+    def decode_letters
+      @input.split('000').map do |letter|
+        if LETTERS_TO_MORSE.key(letter.chop) != nil
+          "#{decode(letter.chop)}#{letter[-1]}"
+        elsif LETTERS_TO_MORSE.key(letter) == nil
+          letter
+        else
+          decode(letter)
+        end
+      end.join
     end
   end
 
