@@ -1,0 +1,1 @@
+now this is a real world scenario ot only do i have grammar i also have double spaces after words and special character like  and  and does a new line break it t shouldnt as long as it is tested well
