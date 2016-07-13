@@ -1,6 +1,6 @@
 require 'Minitest/autorun'
 require 'Minitest/pride'
-require './lib/paramorse'
+require './lib/file_encoder'
 
 class TestFileEncoder < MiniTest::Test
   def setup

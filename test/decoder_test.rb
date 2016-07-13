@@ -1,6 +1,6 @@
 require 'minitest/autorun'
 require 'minitest/pride'
-require './lib/paramorse'
+require './lib/decoder'
 
 class DecoderTest < MiniTest::Test
   def setup
