@@ -16,6 +16,7 @@ module ParaMorse
       create_output_filenames(output_file, num_of_encoders)
       create_encoders(num_of_encoders)
       paramorse_encoder(split_text_into_characters)
+      save_paramorse_encoders_to_files
     end
 
     def filename_validator(filename)
@@ -45,11 +46,23 @@ module ParaMorse
     end
 
     def create_output_filenames(filename, num_of_encoders)
-      filename.chomp('.txt') if filename.include?('.txt')
+      filename.chomp!('.txt') if filename.include?('.txt')
       until @output_filenames.length == num_of_encoders
         @output_filenames << "#{filename}#{@output_filenames.length}.txt"
       end
-      create_encoders(num_of_encoders)
+    end
+
+    def save_paramorse_encoders_to_files
+      until @output_filenames.length == 0
+        current_output_filename = @output_filenames.pop
+        write_file(current_output_filename, @output_filenames.length)
+      end
+    end
+
+    def write_file(filename, current_encoder)
+      file = File.new(filename, 'w')
+      file.write(@encoders[current_encoder].encode_entire_stream)
+      file.close
     end
   end
 end
