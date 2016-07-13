@@ -31,4 +31,19 @@ class DecoderTest < MiniTest::Test
     assert_equal "hello world", @d.decode(sequence_to_decode)
   end
 
+  def test_decoder_recognizes_special_characters
+    spec_chars = ['1','.']
+    no_spec_chars = ['1']
+    assert_equal true, @d.special_characters_found(spec_chars)
+    assert_equal false, @d.special_characters_found(no_spec_chars)
+  end
+
+  def test_decoder_properly_decodes_special_characters
+    spec_chars = ['1','.']
+    more_complicated_spec_chars = ["1", "1", "1", "0", "1", "0", "1", "!"]
+    assert_equal 'e.', @d.decode_special_characters(spec_chars)
+    assert_equal 'd!', @d.decode_special_characters(more_complicated_spec_chars)
+  end
+
+
 end

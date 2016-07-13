@@ -43,26 +43,44 @@ module ParaMorse
   class Decoder
     def decode(input)
       @input = input
-      return decode_words if @input =~ /0000000*/
+      return decode_words(@input.split(/0000000*/)) if @input =~ /0000000*/
       return LETTERS_TO_MORSE.key(@input) unless @input =~ /000/
-      return decode_letters
+      return decode_letters(@input.split('000'))
     end
 
-    def decode_words
-      decoded_words = @input.split(/0000000*/).map {|word| "#{decode(word)} "}
+    def decode_words(words_split)
+      decoded_words = words_split.map {|word| "#{decode(word)} "}
       return decoded_words.join.chop
     end
 
-    def decode_letters
-      @input.split('000').map do |letter|
-        if LETTERS_TO_MORSE.key(letter.chop) != nil
-          "#{decode(letter.chop)}#{letter[-1]}"
+    def decode_letters(letters_split)
+      decoded_letters = letters_split.map do |letter|
+        if special_characters_found(letter.chars)
+          decode_special_characters(letter.chars)
         elsif LETTERS_TO_MORSE.key(letter) == nil
           letter
         else
           decode(letter)
         end
-      end.join
+      end
+      decoded_letters.join
+    end
+
+    def special_characters_found(letter)
+      !letter.all? { |digit| digit =~ /\w/ }
+    end
+
+    def decode_special_characters(letter)
+      letter_without_spec_char = Array.new
+      spec_char = Array.new
+      letter.each do |digit|
+        if digit =~ /\w/
+          letter_without_spec_char << digit
+        else
+          spec_char << digit
+        end
+      end
+      "#{decode(letter_without_spec_char.join)}#{spec_char.join}"
     end
   end
 end

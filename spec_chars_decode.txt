@@ -1,2 +1,2 @@
-now, this is a real world scenario. not only do i have grammar, i also have double spaces after words and special characters. like0# and0@ and0$$.
+now, this is a real world scenario. not only do i have grammar, i also have double spaces after words and special characters. like# and@ and$$.
 does a new line break it? it shouldn't, as long as it is tested well.

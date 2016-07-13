@@ -42,7 +42,7 @@ class EncoderTest < MiniTest::Test
   end
   def test_it_handles_special_characters
     encoder = ParaMorse::Encoder.new
-    expected = "1010101000100010111010100010111010100011101110111,00000001011101110001110111011100010111010001011101010001110101"
-    assert_equal expected, encoder.encode("hello, world")
+    expected = "1010101000100010111010100010111010100011101110111,00000001011101110001110111011100010111010001011101010001110101!"
+    assert_equal expected, encoder.encode("hello, world!")
   end
 end
