@@ -39,4 +39,19 @@ class TestParallelEncoder < Minitest::Test
     @p.encode_from_file('test', 1, 'test_encoder.txt')
     assert_equal 4, @p.encoders[0].current_queue.count
   end
+  def test_encode_from_file_dumps_letters_into_more_than_one_encoder
+    @p.encode_from_file('test', 3, 'test_encoder')
+    assert_equal 2, @p.encoders[0].current_queue.count
+    assert_equal 1, @p.encoders[1].current_queue.count
+    assert_equal ['h'], @p.encoders[0].current_queue.peek
+  end
+  def test_encode_from_file_creates_necessary_output_filename
+    @p.encode_from_file('test', 3, 'test_encoder')
+    assert_equal 'test_encoder0.txt', @p.output_filenames[0]
+    assert_equal 'test_encoder1.txt', @p.output_filenames[1]
+  end
+  def test_encode_from_file_dumps_streamed_letters_into_files
+    @p.encode_from_file('test', 3, 'test_paraencoding')
+    
+  end
 end
