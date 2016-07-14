@@ -75,4 +75,12 @@ class TestStreamDecoder < MiniTest::Test
     @s.receive("1")
     assert_equal 'he b', @s.decode
   end
+  def test_stream_knows_if_its_empty
+    assert_equal true, @s.empty?
+  end
+  def test_stream_handles_special_characters
+    @s.receive("11101,")
+    assert_equal "n,", @s.decode_letter
+  end
+
 end

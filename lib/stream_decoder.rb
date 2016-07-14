@@ -21,6 +21,15 @@ module ParaMorse
       end
       Decoder.new.decode(letter_to_be_decoded)
     end
+
+    def decode_letter
+      letter_to_be_decoded = @current_queue.pop
+      Decoder.new.decoder(letter_to_be_decoded)
+    end
+
+    def empty?
+      @current_queue.count == 0
+    end
   end
 
 end

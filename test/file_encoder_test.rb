@@ -33,16 +33,16 @@ class TestFileEncoder < MiniTest::Test
   end
   def test_filename_of_file_to_be_saved_checks_for_txt
     @f.encode('another_test', 'test_encode')
-    assert_equal "another_test.txt", @f.plain_filename
-    assert_equal "test_encode.txt", @f.encode_filename
+    assert_equal "./text/another_test.txt", @f.plain_filename
+    assert_equal "./text/test_encode.txt", @f.encode_filename
   end
   def test_file_saves_encoded_text_to_filename
     @f.encode('another_test', 'test_encode')
-    assert_equal true, File.exists?('test_encode.txt')
+    assert_equal true, File.exists?('./text/test_encode.txt')
   end
   def test_file_encodes_large_text_file
     @f.encode('large_test_file', 'large_test_encoded')
-    assert File.read('large_test_encoded.txt').length > 100
+    assert File.read('./text/large_test_encoded.txt').length > 100
   end
   def test_file_encoder_handles_special_characters
     @f.encode('spec_chars_test', 'spec_chars_encoded')

@@ -20,8 +20,8 @@ module ParaMorse
     end
 
     def check_for_txt(filename)
-      filename = "#{filename}.txt" unless filename =~ /.txt/
-      filename
+      return filename = "./text/#{filename}.txt" unless filename =~ /.txt/
+      "./text/#{filename}"
     end
 
     def encoded_file_contents

@@ -20,8 +20,8 @@ module ParaMorse
     end
 
     def filename_validator(filename)
-      return "#{filename}.txt" unless filename.include?('.txt')
-      filename
+      return "./text/#{filename}.txt" unless filename.include?('.txt')
+      "./text/#{filename}"
     end
 
     def text_in_input_file
@@ -48,7 +48,7 @@ module ParaMorse
     def create_output_filenames(filename, num_of_encoders)
       filename.chomp!('.txt') if filename.include?('.txt')
       until @output_filenames.length == num_of_encoders
-        @output_filenames << "#{filename}#{@output_filenames.length}.txt"
+        @output_filenames << "./text/#{filename}#{@output_filenames.length}.txt"
       end
     end
 

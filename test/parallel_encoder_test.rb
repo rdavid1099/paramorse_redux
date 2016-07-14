@@ -17,7 +17,7 @@ class TestParallelEncoder < Minitest::Test
   end
   def test_encode_from_file_detects_files_without_txt
     @p.encode_from_file('test', 1, 'test_encoder.txt')
-    assert_equal 'test.txt', @p.filename_validator('test')
+    assert_equal './text/test.txt', @p.filename_validator('test')
   end
   def test_encode_from_file_properly_reads_file_given
     @p.encode_from_file('test', 1, 'test_encoder.txt')
@@ -47,15 +47,15 @@ class TestParallelEncoder < Minitest::Test
   # end
   def test_encode_from_file_creates_necessary_output_filename
     @p.encode_from_file('test', 3, 'test_encoder')
-    assert_equal true, File.exist?('test_encoder0.txt')
-    assert_equal false, File.exist?('test_encoder123.txt')
+    assert_equal true, File.exist?('./text/test_encoder0.txt')
+    assert_equal false, File.exist?('./text/test_encoder123.txt')
   end
   def test_encode_from_file_dumps_streamed_letters_into_files
     @p.encode_from_file('test', 3, 'simple_test_encoder.txt')
-    assert_equal '1010101000111010101', File.read('simple_test_encoder0.txt')
+    assert_equal '1010101000111010101', File.read('./text/simple_test_encoder0.txt')
   end
   def test_encode_from_file_can_handle_large_news_article
     @p.encode_from_file('real_world_news_test', 8, 'real_world_test_encoder.txt')
-    assert_equal true, File.read('real_world_test_encoder0.txt').length > 100
+    assert_equal true, File.read('./text/real_world_test_encoder0.txt').length > 100
   end
 end

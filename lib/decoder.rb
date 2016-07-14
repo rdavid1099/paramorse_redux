@@ -41,16 +41,30 @@ module ParaMorse
   }
 
   class Decoder
+    def decoder(input)
+      return " " if input.include?('0000000')
+      input.chomp!('000') if input.include?('000')
+      decode(input)
+    end
+
     def decode(input)
       @input = input
       return decode_words(@input.split(/0000000*/)) if @input =~ /0000000*/
-      return LETTERS_TO_MORSE.key(@input) unless @input =~ /000/
+      return decode_single_letter unless @input =~ /000/
       return decode_letters(@input.split('000'))
     end
 
     def decode_words(words_split)
       decoded_words = words_split.map {|word| "#{decode(word)} "}
       return decoded_words.join.chop
+    end
+
+    def decode_single_letter
+      if special_characters_found(@input.chars)
+        return decode_special_characters(@input.chars)
+      else
+        return LETTERS_TO_MORSE.key(@input)
+      end
     end
 
     def decode_letters(letters_split)
