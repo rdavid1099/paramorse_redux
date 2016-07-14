@@ -25,7 +25,7 @@ class TestParallelDecoder < Minitest::Test
   end
   def test_decode_from_files_reads_encoded_files
     @p.decode_from_files(3, 'simple_test_encoder', 'decoded_test')
-    assert_equal '1010101000111010101', @p.file_to_decode_contents('simple_test_encoder0.txt')
+    assert_equal ['1','0','1','0','1','0','1','0','0','0','1','1','1','0','1','0','1','0','1'], @p.file_to_decode_contents('simple_test_encoder0.txt')
   end
   def test_encoded_files_are_saved_to_respecitve_decoders
     @p.decode_from_files(3, 'simple_test_encoder', 'decoded_test')

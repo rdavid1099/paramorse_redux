@@ -1,4 +1,5 @@
 require './lib/stream_decoder'
+require './lib/queue'
 
 module ParaMorse
   class ParallelDecoder
@@ -8,6 +9,7 @@ module ParaMorse
     def initialize
       @encoded_files = Array.new
       @decoders = Array.new
+      @queue = Queue.new
     end
 
     def decode_from_files(num_of_decoders, encoded_filename, decoded_filename)
@@ -29,7 +31,7 @@ module ParaMorse
     end
 
     def file_to_decode_contents(filename)
-      File.read(filename)
+      File.read(filename).chars
     end
 
     def paramorse_decoder
@@ -39,8 +41,27 @@ module ParaMorse
     end
 
     def write_to_decoders(filename)
-      @decoders << StreamDecoder.new.receive(file_to_decode_contents(filename))
+      stream = StreamDecoder.new
+      split_up_letters(filename)
+      until @queue.count == 0
+        stream.receive(@queue.pop)
+      end
+      @decoders << stream
     end
+
+    def split_up_letters(filename)
+      complete_chars = String.new
+      contents = file_to_decode_contents(filename)
+      contents.each.with_index do |digit, i|
+        complete_chars += digit
+        if complete_chars.include?('000') && contents[i + 1] != '0'
+          @queue.push(complete_chars)
+          complete_chars = ""
+        end
+      end
+    end
+
+
 
   end
 
